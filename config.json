@@ -1,0 +1,6 @@
+{
+    "shortcut_insert_link": "Ctrl+H",
+    "shortcut_unlink": "Ctrl+Shift+H",
+    "link_function": true,
+    "unlink_function": true
+}
