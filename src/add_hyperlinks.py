@@ -6,148 +6,30 @@
 # the function setupEditorButtonsFilter is taken from "Auto Markdown"
 # from https://ankiweb.net/shared/info/1030875226 which should be
 # Copyright 2018 anonymous
-#      probably reddit user /u/NavyTeal, see https://www.reddit.com/r/Anki/comments/9t7acy/bringing_markdown_to_anki_21/
+#      probably reddit user /u/NavyTeal, see
+#      https://www.reddit.com/r/Anki/comments/9t7acy/bringing_markdown_to_anki_21/
 
 
 import json
 import os
+import re
+
 from anki import version
-from aqt import mw
 from anki.hooks import addHook, wrap
+from anki.lang import _
+from aqt import mw
+from aqt.qt import *
+from aqt.editor import Editor
 
-from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QLineEdit
-from PyQt5.QtGui import QKeySequence
-
+from .window import Hyperlink
+from .helper_functions import escape_html_chars
 
 addon_path = os.path.dirname(__file__)
 
 
-def load_config(conf):
-    global config
-    config=conf
+def gc(arg, fail=False):
+    return mw.addonManager.getConfig(__name__).get(arg, fail)
 
-load_config(mw.addonManager.getConfig(__name__))
-mw.addonManager.setConfigUpdatedAction(__name__,load_config) 
-
-
-
-
-
-def escape_html_chars(s):
-    """
-    Escape HTML characters in a string. Return a safe string.
-    >>> escape_html_chars(u"this&that")
-    u'this&amp;that'
-    >>> escape_html_chars(u"#lorem")
-    u'#lorem'
-    """
-    if not s:
-        return ""
-
-    html_escape_table = {
-        "&": "&amp;",
-        '"': "&quot;",
-        "'": "&apos;",
-        ">": "&gt;",
-        "<": "&lt;",
-    }
-
-    result = "".join(html_escape_table.get(c, c) for c in s)
-    return result
-
-
-# size of the dialog windows
-DIALOG_SIZE_X         = 350
-DIALOG_SIZE_Y         = 200
-MIN_COMBOBOX_WIDTH    = 140
-
-
-
-class Hyperlink(object):
-    def __init__(self, other, parent_window, selected_text):
-        self.editor_instance    = other
-        self.parent_window      = parent_window
-        self.selected_text      = selected_text
-        self.hyperlink_dialog()
-
-    def hyperlink_dialog(self):
-        dialog = QDialog(self.parent_window)
-        dialog.setWindowTitle("Create a hyperlink")
-        dialog.resize(DIALOG_SIZE_X, DIALOG_SIZE_Y)
-
-        ok_button_anchor = QPushButton("&OK", dialog)
-        ok_button_anchor.setEnabled(False)
-        ok_button_anchor.clicked.connect(lambda: self.insert_anchor(
-            url_edit.text(), urltext_edit.text()))
-        ok_button_anchor.clicked.connect(dialog.hide)
-
-        ok_button_anchor.setAutoDefault(True)
-
-        cancel_button_anchor = QPushButton("&Cancel", dialog)
-        cancel_button_anchor.clicked.connect(dialog.hide)
-        cancel_button_anchor.setAutoDefault(True)
-
-        url_label = QLabel("Link to:")
-        url_edit = QLineEdit()
-        url_edit.setPlaceholderText("URL")
-        url_edit.textChanged.connect(lambda: self.enable_ok_button(
-            ok_button_anchor, url_edit.text(), urltext_edit.text()))
-
-        urltext_label = QLabel("Text to display:")
-        urltext_edit = QLineEdit()
-        urltext_edit.setPlaceholderText("Text")
-        urltext_edit.textChanged.connect(lambda: self.enable_ok_button(
-            ok_button_anchor, url_edit.text(), urltext_edit.text()))
-
-        # if user already selected text, put it in urltext_edit
-        if self.selected_text:
-            urltext_edit.setText(self.selected_text)
-
-        button_box = QHBoxLayout()
-        button_box.addStretch(1)
-        button_box.addWidget(cancel_button_anchor)
-        button_box.addWidget(ok_button_anchor)
-
-        dialog_vbox = QVBoxLayout()
-        dialog_vbox.addWidget(url_label)
-        dialog_vbox.addWidget(url_edit)
-        dialog_vbox.addWidget(urltext_label)
-        dialog_vbox.addWidget(urltext_edit)
-        dialog_vbox.addLayout(button_box)
-
-        dialog.setLayout(dialog_vbox)
-
-        # give url_edit focus
-        url_edit.setFocus()
-
-        dialog.exec_()
-
-    @staticmethod
-    def enable_ok_button(button, url, text):
-        if url and text:
-            button.setEnabled(True)
-        else:
-            button.setEnabled(False)
-
-    @staticmethod
-    def create_anchor(url, text):
-        """
-        Create a hyperlink string, where `url` is the hyperlink reference
-        and `text` the content of the tag.
-        """
-        text = escape_html_chars(text)
-
-        return "<a href=\"{0}\">{1}</a>".format(url, text)
-
-    def insert_anchor(self, url, text):
-        """
-        Inserts a HTML anchor `<a>` into the text field.
-        """
-        replacement = self.create_anchor(url, text)
-        self.editor_instance.web.eval(
-                "document.execCommand('insertHTML', false, %s);"
-                % json.dumps(replacement))
- 
 
 def unlink(editor):
     editor.web.eval("setFormat('unlink')")
@@ -155,37 +37,115 @@ def unlink(editor):
 
 def toggle_hyperlink(editor):
     selected = editor.web.selectedText()
-    Hyperlink(editor, editor.parentWindow, selected)
+    h = Hyperlink(editor, editor.parentWindow, selected)
+    if hasattr(h, "replacement"):
+        editor.web.eval(
+                    "document.execCommand('insertHTML', false, %s);"
+                    % json.dumps(h.replacement))
+
+
+def keystr(k):
+    key = QKeySequence(k)
+    return key.toString(QKeySequence.NativeText)
 
 
 def setupEditorButtonsFilter(buttons, editor):
-    global editor_instance
-    editor_instance = editor
+    b = editor.addButton(
+        os.path.join(addon_path, "icons", "hyperlink.png"),
+        "hyperlinkbutton",
+        toggle_hyperlink,
+        tip="Insert Hyperlink ({})".format(keystr(gc("shortcut_insert_link", ""))),
+        keys=gc('shortcut_insert_link')
+        )
+    buttons.append(b)
 
-    key = QKeySequence(config['shortcut_insert_link'])
-    keyStr = key.toString(QKeySequence.NativeText)
-
-    if config['link_function']:
-        b = editor.addButton(
-            os.path.join(addon_path, "icons", "hyperlink.png"), 
-            "hyperlinkbutton", 
-            toggle_hyperlink, 
-            tip="Insert Hyperlink ({})".format(keyStr),
-            keys=config['shortcut_insert_link']) 
-        buttons.append(b)
-
-    key2 = QKeySequence(config['shortcut_unlink'])
-    key2Str = key2.toString(QKeySequence.NativeText)
-
-    if config['unlink_function']:
+    if gc('unlink_button_and_shortcut', True):
         c = editor.addButton(
-            os.path.join(addon_path, "icons", "remove_hyperlink.png"), 
-            "remove_hyperlink_button", 
-            unlink, 
-            keys=config['shortcut_unlink'], 
-            tip="remove hyperlink ({})".format(key2Str))
+            os.path.join(addon_path, "icons", "remove_hyperlink.png"),
+            "remove_hyperlink_button",
+            unlink,
+            tip="remove hyperlink ({})".format(keystr(gc("shortcut_unlink", ""))),
+            keys=gc('shortcut_unlink', "")
+            )
         buttons.append(c)
 
     return buttons
-
 addHook("setupEditorButtons", setupEditorButtonsFilter)
+
+
+def is_valid_url(string):
+    regex = re.compile(
+        r'^(?:http|ftp)s?://'
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+        r'localhost|'
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        r'(?::\d+)?'
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return re.match(regex, string)
+
+
+def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkText):
+    url = selectedtext.strip()
+    if QueryLinkText:
+        h = Hyperlink(editor, editor.parentWindow, selectedtext, True)
+        if hasattr(h, "replacement"):
+            replacement = h.replacement
+        else:
+            return
+    else:
+        text = selectedtext.strip()
+        replacement = Hyperlink.create_anchor(url, text)
+    wspace = [' ', ]
+    for i in wspace:
+        if selectedtext.endswith(i):
+            replacement = replacement + i
+        if selectedtext.startswith(i):
+            replacement = i + replacement
+    editor.web.eval(
+                "document.execCommand('insertHTML', false, %s);"
+                % json.dumps(replacement))
+Editor.format_link_string_as_html_hyperlink = format_link_string_as_html_hyperlink
+
+
+def add_to_context(view, menu):
+    # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
+    data = view.page().contextMenuData()
+    selectedtext = view.editor.web.selectedText()
+    if not (data.linkUrl().toString() or data.linkText()):
+        # not a html hyperlink
+        if is_valid_url(selectedtext.strip()):
+            if gc('contextmenu_show_make_clickable', False):
+                a = menu.addAction(_("Hyperlink - make clickable"))
+                # a.setShortcut(QKeySequence("Ctrl+Alt+ö"))  #doesn't work
+                a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
+                                    format_link_string_as_html_hyperlink(e, u, s, False))
+            if gc('contextmenu_show_set_link_text', False):
+                a = menu.addAction(_("Hyperlink - set link text "))
+                a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
+                                    format_link_string_as_html_hyperlink(e, u, s, True))
+    # if (data.linkUrl().toString() or data.linkText()):   #this is a  html hyperlink
+    if gc('contextmenu_show_unlink', False):
+        a = menu.addAction(_("Hyperlink - unlink "))
+        a.triggered.connect(lambda _, e=view.editor: unlink(e))
+    url = data.linkUrl()
+    if url.isValid():
+        a = menu.addAction(_("Copy URL"))
+        a.triggered.connect(lambda _, v="", u=url: set_clip(v, u))
+addHook("EditorWebView.contextMenuEvent", add_to_context)
+
+
+# reviewer
+def set_clip(v, u):
+    QApplication.clipboard().setText(u.url())
+
+
+def _reviewerContextMenu(view, menu):
+    if mw.state != "review":
+        return
+    context_data = view.page().contextMenuData()
+    url = context_data.linkUrl()
+    if url.isValid():
+        a = menu.addAction(_("Copy URL"))
+        a.triggered.connect(lambda _, v=view, u=url: set_clip(v, u))
+if gc("show_in_reviewer_context_menu"):
+    addHook('AnkiWebView.contextMenuEvent', _reviewerContextMenu)
