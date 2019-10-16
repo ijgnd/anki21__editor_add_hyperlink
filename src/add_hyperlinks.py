@@ -111,7 +111,8 @@ def add_to_context(view, menu):
     # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
     data = view.page().contextMenuData()
     selectedtext = view.editor.web.selectedText()
-    if not (data.linkUrl().toString() or data.linkText()):
+    url = data.linkUrl()
+    if not (url.toString() or data.linkText()):
         # not a html hyperlink
         if is_valid_url(selectedtext.strip()):
             if gc('contextmenu_show_make_clickable', False):
@@ -123,11 +124,9 @@ def add_to_context(view, menu):
                 a = menu.addAction(_("Hyperlink - set link text "))
                 a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, True))
-    # if (data.linkUrl().toString() or data.linkText()):   #this is a  html hyperlink
-    if gc('contextmenu_show_unlink', False):
+    if (data.linkUrl().toString() or data.linkText()) and gc('contextmenu_show_unlink', False):
         a = menu.addAction(_("Hyperlink - unlink "))
         a.triggered.connect(lambda _, e=view.editor: unlink(e))
-    url = data.linkUrl()
     if url.isValid():
         a = menu.addAction(_("Copy URL"))
         a.triggered.connect(lambda _, v="", u=url: set_clip(v, u))
