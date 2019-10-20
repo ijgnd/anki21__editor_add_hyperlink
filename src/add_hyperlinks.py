@@ -12,7 +12,6 @@
 
 import json
 import os
-import re
 
 from anki import version
 from anki.hooks import addHook, wrap
