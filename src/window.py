@@ -4,7 +4,6 @@ from aqt.qt import *
 
 from .helper_functions import escape_html_chars
 
-
 # size of the dialog windows
 DIALOG_SIZE_X = 350
 DIALOG_SIZE_Y = 200
