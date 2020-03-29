@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Add Hyperlink",
+  "properties": {
+    "contextmenu_show_make_clickable": {
+      "type": "boolean",
+      "default": true,
+      "description": "if you have selected a valid url you'll see an additional context menu entry"
+    },
+    "contextmenu_show_unlink": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the contextmenu has an entry to delete/unlink hyperlinks from the selection"
+    },
+    "contextmenu_show_set_link_text": {
+      "type": "boolean",
+      "default": true,
+      "description": "If you have selected a valid url you'll see an additional context menu entry"
+    },
+    "show_in_reviewer_context_menu": {
+      "type": "boolean",
+      "default": true,
+      "description": "Reviewer appear when you right click."
+    },
+    "shortcut_insert_link": {
+      "type": "string",
+      "pattern": "^((([Cc][Tt][Rr][Ll]|[Aa][Ll][Tt]|[Ss][Hh][Ii][Ff][Tt])\\+){0,3}([a-zA-Z0-9]|F[1-9]|F1[0-2]))?$",
+      "default": "Ctrl+Shift+H"
+     },
+    "shortcut_unlink": {
+      "type": "string",
+      "pattern": "^((([Cc][Tt][Rr][Ll]|[Aa][Ll][Tt]|[Ss][Hh][Ii][Ff][Tt])\\+){0,3}([a-zA-Z0-9]|F[1-9]|F1[0-2]))?$",
+      "default": "Ctrl+Shift+Alt+H"
+    },
+    "unlink_button_and_shortcut":{
+      "type": "boolean",
+      "default": true,
+      "description": "if true there is an unlink button and a shortcut. I rarely use this function and if I do I use the contextmenu. That's why I prefer to set this to \"false\" to save some space."
+    }
+  }
+}
+
