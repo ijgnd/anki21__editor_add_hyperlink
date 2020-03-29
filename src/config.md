@@ -4,3 +4,4 @@
 - `contextmenu_show_make_clickable`: if true and if you have selected a valid url you'll see an additional context menu entry
 - `contextmenu_show_unlink`: if true the contextmenu has an entry to delete/unlink hyperlinks from the selection
 - `contextmenu_show_set_link_text`: if true and if you have selected a valid url you'll see an additional context menu entry
+- `unlink_button_and_shortcut`: if true, add a button to remove hypelink.
