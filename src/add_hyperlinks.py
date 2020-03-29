@@ -13,8 +13,7 @@
 import json
 import os
 
-from anki import version
-from anki.hooks import addHook, wrap
+from anki.hooks import addHook
 from anki.lang import _
 from aqt import mw
 from aqt.editor import Editor
