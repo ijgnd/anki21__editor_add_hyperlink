@@ -17,7 +17,7 @@ from anki.hooks import addHook
 from anki.lang import _
 from aqt import mw
 from aqt.editor import Editor
-from aqt.qt import *
+from aqt.qt import QApplication, QKeySequence
 
 from .helper_functions import escape_html_chars, is_valid_url
 from .window import Hyperlink

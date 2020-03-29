@@ -1,6 +1,7 @@
 import json
 
-from aqt.qt import *
+from aqt.qt import (QDialog, QHBoxLayout, QLabel, QLineEdit, QPushButton,
+                    QVBoxLayout)
 
 from .helper_functions import escape_html_chars
 
