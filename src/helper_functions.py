@@ -1,5 +1,6 @@
 import re
 
+
 def escape_html_chars(s):
     """
     Escape HTML characters in a string. Return a safe string.
