@@ -108,3 +108,7 @@ venv.bak/
 *.ankiaddon
 __pycache__
 meta.json
+
+checksums.csv
+*___bak_*
+*___note*
