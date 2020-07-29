@@ -30,18 +30,11 @@ from aqt.editor import Editor
 from aqt.qt import QApplication, QKeySequence
 from aqt.utils import openLink
 
+from .config import gc
 from .helper_functions import escape_html_chars, is_valid_url
 from .window import Hyperlink
 
 addon_path = os.path.dirname(__file__)
-
-
-def gc(arg, fail=False):
-    conf = mw.addonManager.getConfig(__name__)
-    if conf:
-        return conf.get(arg, fail)
-    else:
-        return fail
 
 
 def hlunlink(editor):
