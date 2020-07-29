@@ -1,7 +1,14 @@
 - `shortcut_insert_link` "Ctrl+Shift+H",
 - `shortcut_unlink`: "Ctrl+Shift+Alt+H",
-- `unlink_button_and_shortcut`: if true there is an unlink button and a shortcut. I rarely use this function and if I do I use the contextmenu. That's why I prefer to set this to "false" to save some space.
-- `contextmenu_show_make_clickable`: if true and if you have selected a valid url you'll see an additional context menu entry
-- `contextmenu_show_unlink`: if true the contextmenu has an entry to delete/unlink hyperlinks from the selection
-- `contextmenu_show_set_link_text`: if true and if you have selected a valid url you'll see an additional context menu entry
+- `unlink_button_and_shortcut`: if true there is an unlink button and a shortcut. I rarely use this 
+function and if I do I use the contextmenu. That's why I prefer to set this to "false" to save 
+some space.
+- `contextmenu_show_transform_selected_url_to_hyperlink`: if true and if you have selected a valid 
+url you'll see an additional context menu entry
+- `contextmenu_show_copy_url`(default "true"), `contextmenu_show_open_in_browser` (default "true"): 
+option to show additional menues in the context menu
+- `contextmenu_show_unlink`: if true the contextmenu has an entry to delete/unlink hyperlinks from 
+the selection
+- `contextmenu_show_set_link_text`: if true and if you have selected a valid url you'll see an 
+additional context menu entry
 - `unlink_button_and_shortcut`: if true, add a button to remove hypelink.

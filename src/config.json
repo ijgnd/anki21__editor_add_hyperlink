@@ -1,6 +1,8 @@
 {
-    "contextmenu_show_make_clickable":true,
+    "contextmenu_show_transform_selected_url_to_hyperlink":true,
     "contextmenu_show_unlink":true,
+    "contextmenu_show_copy_url": true,
+    "contextmenu_show_open_in_browser": true,
     "contextmenu_show_set_link_text":true,
     "shortcut_insert_link": "Ctrl+Shift+H",
     "shortcut_unlink": "Ctrl+Shift+Alt+H",

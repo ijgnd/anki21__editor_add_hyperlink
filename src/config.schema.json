@@ -3,16 +3,26 @@
   "type": "object",
   "title": "Add Hyperlink",
   "properties": {
-    "contextmenu_show_make_clickable": {
+    "contextmenu_show_transform_selected_url_to_hyperlink": {
       "type": "boolean",
       "default": true,
-      "description": "if you have selected a valid url you'll see an additional context menu entry"
+      "description": "if you have selected a valid url you'll see an additional context menu entry to format it as a hyperlink"
     },
     "contextmenu_show_unlink": {
       "type": "boolean",
       "default": true,
       "description": "Whether the contextmenu has an entry to delete/unlink hyperlinks from the selection"
     },
+    "contextmenu_show_copy_url": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the contextmenu has an entry to copy an URL"
+      },
+    "contextmenu_show_open_in_browser": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the contextmenu has an entry to open hyperlinks (e.g. in the browser)"
+      },
     "contextmenu_show_set_link_text": {
       "type": "boolean",
       "default": true,

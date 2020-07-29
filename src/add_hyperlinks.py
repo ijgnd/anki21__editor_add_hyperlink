@@ -28,6 +28,7 @@ from anki.lang import _
 from aqt import mw
 from aqt.editor import Editor
 from aqt.qt import QApplication, QKeySequence
+from aqt.utils import openLink
 
 from .helper_functions import escape_html_chars, is_valid_url
 from .window import Hyperlink
@@ -128,8 +129,8 @@ def add_to_context(view, menu):
     if not (url.toString() or data.linkText()):
         # not a html hyperlink
         if is_valid_url(selectedtext.strip()):
-            if gc('contextmenu_show_make_clickable', False):
-                a = menu.addAction(_("Hyperlink - make clickable"))
+            if gc('contextmenu_show_transform_selected_url_to_hyperlink', False):
+                a = menu.addAction(_("Hyperlink - transform to hyperlink"))
                 # a.setShortcut(QKeySequence("Ctrl+Alt+ö"))  #doesn't work
                 a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, False))
@@ -137,12 +138,15 @@ def add_to_context(view, menu):
                 a = menu.addAction(_("Hyperlink - set link text "))
                 a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, True))
-    if (data.linkUrl().toString() or data.linkText()) and gc('contextmenu_show_unlink', False):
+    if (data.linkUrl().toString() or data.linkText()) and gc('contextmenu_show_unlink'):
         a = menu.addAction(_("Hyperlink - unlink "))
         a.triggered.connect(lambda _, e=view.editor: hlunlink(e))
-    if url.isValid():
+    if url.isValid() and gc("contextmenu_show_copy_url"):
         a = menu.addAction(_("Copy URL"))
         a.triggered.connect(lambda _, v="", u=url: set_clip(v, u))
+    if url.isValid() and gc("contextmenu_show_open_in_browser"):
+        a = menu.addAction(_("Open URL"))
+        a.triggered.connect(lambda _, u=url: openLink(u))
 addHook("EditorWebView.contextMenuEvent", add_to_context)
 
 
