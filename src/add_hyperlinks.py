@@ -143,8 +143,6 @@ def add_to_context(view, menu):
     if url.isValid():
         a = menu.addAction(_("Copy URL"))
         a.triggered.connect(lambda _, v="", u=url: set_clip(v, u))
-
-
 addHook("EditorWebView.contextMenuEvent", add_to_context)
 
 

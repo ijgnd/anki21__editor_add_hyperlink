@@ -3,7 +3,7 @@ import json
 from aqt.qt import (QDialog, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                     QVBoxLayout)
 
-from .helper_functions import escape_html_chars
+from .helper_functions import escape_html_chars, some_percent_encoding
 
 # size of the dialog windows
 DIALOG_SIZE_X = 350
@@ -84,7 +84,9 @@ class Hyperlink(object):
         and `text` the content of the tag.
         """
         text = escape_html_chars(text)
-        return "<a href=\"{0}\">{1}</a>".format(url, text)
+        url = some_percent_encoding(url)
+        out =  "<a href=\"{0}\">{1}</a>".format(url, text)
+        return out
 
     def insert_anchor(self, url, text):
         """

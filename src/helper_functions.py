@@ -24,6 +24,28 @@ def escape_html_chars(s):
     return result
 
 
+def some_percent_encoding(s):
+    # https://en.wikipedia.org/wiki/Help:URL#Fixing_links_with_unsupported_characters
+    replacements = {
+    " ": "%20",
+    '"': "%22",
+    "'": "%27",
+    ",": "%2C",
+    ";": "%3B",
+    "<": "%3C",
+    ">": "%3E",
+    "?": "%3F",
+    "[": "%5B",
+    "]": "%5D",
+    "{": "%7B",
+    "|": "%7C",
+    "}": "%7D",
+    }
+    result = "".join(replacements.get(c, c) for c in s)
+    return result
+ 	 		 	 	 	 
+
+
 def is_valid_url(string):
     regex = re.compile(
         r'^(?:http|ftp)s?://'
