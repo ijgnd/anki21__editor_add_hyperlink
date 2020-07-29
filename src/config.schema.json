@@ -33,6 +33,11 @@
         "default": true,
         "description": "Whether characters like \" or ? will transformed in the html source code to percent encoding"
       },
+    "remove whitespace from beginning and end of urls": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether whitespace characters will be removed from the beginning and end of text you paste into the field 'Link to' in the dialog"
+      },
     "show_in_reviewer_context_menu": {
       "type": "boolean",
       "default": true,

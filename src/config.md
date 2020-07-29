@@ -7,7 +7,9 @@ the selection
 - `contextmenu_show_set_link_text`: if true and if you have selected a valid url you'll see an 
 additional context menu entry
 - `encode_illegal_characters_in_links`: "Whether characters like \" or ? will transformed in the
-html source code to percent encoding"
+html source code to percent encoding
+- `remove whitespace from beginning and end of urls`: Whether whitespace characters will be removed 
+from the beginning and end of text you paste into the field 'Link to' in the dialog
 - `shortcut_insert_link` "Ctrl+Shift+H",
 - `shortcut_unlink`: "Ctrl+Shift+Alt+H",
 - `unlink_button_and_shortcut`: if true there is an unlink button and a shortcut. I rarely use this 
