@@ -1,13 +1,23 @@
-# this is a small modification of the hyperlink/unlink function
-# from the Power Format Pack: Copyright 2014-2017 Stefan van den Akker <neftas@protonmail.com>
+# Anki add-on to insert hyperlinks from the editor
 
-# the code from the PFP (mostfly from hyperlink.py and utilities.py)
-# is mostly from L47-L169 and the icons.
-# the function setupEditorButtonsFilter is taken from "Auto Markdown"
-# from https://ankiweb.net/shared/info/1030875226 which should be
-# Copyright 2018 anonymous
-#      probably reddit user /u/NavyTeal, see
-#      https://www.reddit.com/r/Anki/comments/9t7acy/bringing_markdown_to_anki_21/
+# Copyright 2014-2017 Stefan van den Akker <neftas@protonmail.com>
+#           2018- ijgnd
+#           2020 Arthur Milchior
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 
 
 import json
@@ -57,7 +67,7 @@ def keystr(k):
     return key.toString(QKeySequence.NativeText)
 
 
-def setupEditorButtonsFilter(buttons, editor):
+def setupEditorButtons(buttons, editor):
     b = editor.addButton(
         os.path.join(addon_path, "icons", "hyperlink.png"),
         "hyperlinkbutton",
@@ -82,7 +92,7 @@ def setupEditorButtonsFilter(buttons, editor):
     return buttons
 
 
-addHook("setupEditorButtons", setupEditorButtonsFilter)
+addHook("setupEditorButtons", setupEditorButtons)
 
 
 def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkText):
