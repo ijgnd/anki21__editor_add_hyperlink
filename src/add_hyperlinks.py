@@ -54,14 +54,12 @@ def toggle_hyperlink(editor):
         # A proper solution would mean that I'd also have to handle text
         # that a user changed. But then I can no longer use document.execCommand('CreateLink'
         # So I only document.execCommand('CreateLink when the user didn't change the link text
-        # it in the dialog.
+        # in the dialog.
         if selected == h.text:
-            js = f""" document.execCommand("CreateLink", false, {json.dumps(h.url)}); """
-            editor.web.eval(js)
+            js = """ document.execCommand("CreateLink", false, %s); """ % json.dumps(h.url)
         else:
-            editor.web.eval(
-                "document.execCommand('insertHTML', false, %s);"
-                % json.dumps(h.replacement))
+            js = """ document.execCommand("insertHTML", false, %s); """ % json.dumps(h.replacement)
+        editor.web.eval(js)
 Editor.toggle_hyperlink = toggle_hyperlink
 
 
