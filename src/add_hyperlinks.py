@@ -53,7 +53,7 @@ Editor.hlunlink = hlunlink
 def toggle_hyperlink(editor):
     selected = editor.web.selectedText()
     h = Hyperlink(editor, editor.parentWindow, selected)
-    if hasattr(h, "replacement"):
+    if h.exec():
         editor.web.eval(
             "document.execCommand('insertHTML', false, %s);"
             % json.dumps(h.replacement))
@@ -99,7 +99,7 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkTe
     url = selectedtext.strip()
     if QueryLinkText:
         h = Hyperlink(editor, editor.parentWindow, selectedtext, True)
-        if hasattr(h, "replacement"):
+        if h.exec():
             replacement = h.replacement
         else:
             return
