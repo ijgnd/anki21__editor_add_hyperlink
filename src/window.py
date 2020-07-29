@@ -10,8 +10,8 @@ from aqt.qt import (
     QVBoxLayout,
 )
 from aqt.utils import (
-     saveGeom,
-     restoreGeom,
+    saveGeom,
+    restoreGeom,
 )
 
 from .helper_functions import escape_html_chars, some_percent_encoding
@@ -74,7 +74,6 @@ class Hyperlink(QDialog):
                 urltext_edit.setText(self.selected_text)
                 url_edit.setFocus()
 
-
     @staticmethod
     def enable_ok_button(button, url, text):
         if url and text:
@@ -88,7 +87,7 @@ class Hyperlink(QDialog):
         # and `text` the content of the tag.
         text = escape_html_chars(text)
         url = some_percent_encoding(url)
-        out =  "<a href=\"{0}\">{1}</a>".format(url, text)
+        out = "<a href=\"{0}\">{1}</a>".format(url, text)
         return out
 
     def reject(self):
