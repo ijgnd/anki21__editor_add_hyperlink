@@ -28,6 +28,11 @@
       "default": true,
       "description": "If you have selected a valid url you'll see an additional context menu entry"
     },
+    "encode_illegal_characters_in_links": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether characters like \" or ? will transformed in the html source code to percent encoding"
+      },
     "show_in_reviewer_context_menu": {
       "type": "boolean",
       "default": true,

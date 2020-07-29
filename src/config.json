@@ -4,6 +4,7 @@
     "contextmenu_show_copy_url": true,
     "contextmenu_show_open_in_browser": true,
     "contextmenu_show_set_link_text": true,
+    "encode_illegal_characters_in_links": true,
     "shortcut_insert_link": "Ctrl+Shift+H",
     "shortcut_unlink": "Ctrl+Shift+Alt+H",
     "show_in_reviewer_context_menu": true,

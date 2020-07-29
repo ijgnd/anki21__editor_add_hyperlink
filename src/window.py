@@ -14,6 +14,7 @@ from aqt.utils import (
     restoreGeom,
 )
 
+from .config import gc
 from .helper_functions import escape_html_chars, some_percent_encoding
 
 
@@ -86,7 +87,8 @@ class Hyperlink(QDialog):
         # Create a hyperlink string, where `url` is the hyperlink reference
         # and `text` the content of the tag.
         text = escape_html_chars(text)
-        url = some_percent_encoding(url)
+        if gc("encode_illegal_characters_in_links"):
+            url = some_percent_encoding(url)
         out = "<a href=\"{0}\">{1}</a>".format(url, text)
         return out
 
