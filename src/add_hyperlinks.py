@@ -39,8 +39,6 @@ addon_path = os.path.dirname(__file__)
 
 def hlunlink(editor):
     editor.web.eval("setFormat('unlink')")
-
-
 Editor.hlunlink = hlunlink
 
 
@@ -64,8 +62,6 @@ def toggle_hyperlink(editor):
             editor.web.eval(
                 "document.execCommand('insertHTML', false, %s);"
                 % json.dumps(h.replacement))
-
-
 Editor.toggle_hyperlink = toggle_hyperlink
 
 
@@ -97,8 +93,6 @@ def setupEditorButtons(buttons, editor):
         buttons.append(c)
 
     return buttons
-
-
 addHook("setupEditorButtons", setupEditorButtons)
 
 
@@ -122,8 +116,6 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkTe
     editor.web.eval(
         "document.execCommand('insertHTML', false, %s);"
         % json.dumps(replacement))
-
-
 Editor.format_link_string_as_html_hyperlink = format_link_string_as_html_hyperlink
 
 
@@ -169,7 +161,5 @@ def _reviewerContextMenu(view, menu):
     if url.isValid():
         a = menu.addAction(_("Copy URL"))
         a.triggered.connect(lambda _, v=view, u=url: set_clip(v, u))
-
-
 if gc("show_in_reviewer_context_menu"):
     addHook('AnkiWebView.contextMenuEvent', _reviewerContextMenu)
