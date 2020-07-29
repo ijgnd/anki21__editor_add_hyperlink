@@ -101,5 +101,7 @@ class Hyperlink(QDialog):
     def insert_anchor(self, url, text):
         # Inserts a HTML anchor `<a>` into the text field.
         self.replacement = self.combine_to_hyperlink(url, text)
+        self.url = url
+        self.text = text
         saveGeom(self, "318752047__add_hyperlink")
         self.accept()

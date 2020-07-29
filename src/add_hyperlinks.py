@@ -48,9 +48,22 @@ def toggle_hyperlink(editor):
     selected = editor.web.selectedText()
     h = Hyperlink(editor, editor.parentWindow, selected)
     if h.exec():
-        editor.web.eval(
-            "document.execCommand('insertHTML', false, %s);"
-            % json.dumps(h.replacement))
+        # for details see issue #7,
+        # https://github.com/ijgnd/anki21__editor_add_hyperlink/issues/7
+        # relying on web.selectedText() means that I lose html formatting
+        # and in 2.1 insertHTML into a e.g. a bold section means that the
+        # inserted part is no longer bold.
+        # A proper solution would mean that I'd also have to handle text
+        # that a user changed. But then I can no longer use document.execCommand('CreateLink'
+        # So I only document.execCommand('CreateLink when the user didn't change the link text
+        # it in the dialog.
+        if selected == h.text:
+            js = f""" document.execCommand("CreateLink", false, {json.dumps(h.url)}); """
+            editor.web.eval(js)
+        else:
+            editor.web.eval(
+                "document.execCommand('insertHTML', false, %s);"
+                % json.dumps(h.replacement))
 
 
 Editor.toggle_hyperlink = toggle_hyperlink
