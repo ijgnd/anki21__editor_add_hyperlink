@@ -26,7 +26,11 @@ addon_path = os.path.dirname(__file__)
 
 
 def gc(arg, fail=False):
-    return mw.addonManager.getConfig(__name__).get(arg, fail)
+    conf = mw.addonManager.getConfig(__name__)
+    if conf:
+        return conf.get(arg, fail)
+    else:
+        return fail
 
 
 def hlunlink(editor):
