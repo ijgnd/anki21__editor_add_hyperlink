@@ -99,7 +99,7 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkTe
             return
     else:
         text = selectedtext.strip()
-        replacement = Hyperlink.create_anchor(url, text)
+        replacement = Hyperlink.combine_to_hyperlink(url, text)
     wspace = [' ', ]
     for i in wspace:
         if selectedtext.endswith(i):
