@@ -31,7 +31,12 @@ from aqt.qt import QApplication, QKeySequence
 from aqt.utils import openLink
 
 from .config import gc
-from .helper_functions import escape_html_chars, is_valid_url
+from .helper_functions import (
+    combine_to_hyperlink,
+    escape_html_chars,
+    is_valid_url,
+    some_percent_encoding,
+)
 from .window import Hyperlink
 
 addon_path = os.path.dirname(__file__)
@@ -104,7 +109,7 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkTe
             return
     else:
         text = selectedtext.strip()
-        replacement = Hyperlink.combine_to_hyperlink(url, text)
+        replacement = combine_to_hyperlink(url, text)
     wspace = [' ', ]
     for i in wspace:
         if selectedtext.endswith(i):
