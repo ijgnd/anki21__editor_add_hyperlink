@@ -125,7 +125,7 @@ Editor.format_link_string_as_html_hyperlink = format_link_string_as_html_hyperli
 def add_to_context(view, menu):
     # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
     data = view.page().contextMenuData()
-    selectedtext = view.editor.web.selectedText()
+    selectedtext = view.editor.web.selectedText()    # data.selectedText() also gives plain text
     url = data.linkUrl()
     if not (url.toString() or data.linkText()):
         # not a html hyperlink
