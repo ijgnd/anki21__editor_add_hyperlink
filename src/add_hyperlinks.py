@@ -19,23 +19,18 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-
 import json
 import os
 
 from anki.hooks import addHook
-from anki.lang import _
 from aqt import mw
-from aqt.editor import Editor
 from aqt.qt import QApplication, QKeySequence
 from aqt.utils import openLink
 
 from .config import gc
 from .helper_functions import (
     combine_to_hyperlink,
-    escape_html_chars,
     is_valid_url,
-    some_percent_encoding,
 )
 from .window import Hyperlink
 
@@ -44,7 +39,6 @@ addon_path = os.path.dirname(__file__)
 
 def hlunlink(editor):
     editor.web.eval("setFormat('unlink')")
-Editor.hlunlink = hlunlink
 
 
 def toggle_hyperlink(editor):
@@ -65,7 +59,6 @@ def toggle_hyperlink(editor):
         else:
             js = """ document.execCommand("insertHTML", false, %s); """ % json.dumps(h.replacement)
         editor.web.eval(js)
-Editor.toggle_hyperlink = toggle_hyperlink
 
 
 def keystr(k):
@@ -73,7 +66,7 @@ def keystr(k):
     return key.toString(QKeySequence.NativeText)
 
 
-def setupEditorButtons(buttons, editor):
+def setup_editor_buttons(buttons, editor):
     b = editor.addButton(
         os.path.join(addon_path, "icons", "hyperlink.png"),
         "hyperlinkbutton",
@@ -96,12 +89,12 @@ def setupEditorButtons(buttons, editor):
         buttons.append(c)
 
     return buttons
-addHook("setupEditorButtons", setupEditorButtons)
+addHook("setupEditorButtons", setup_editor_buttons)  # noqa
 
 
-def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkText):
+def format_link_string_as_html_hyperlink(editor, data, selectedtext, query_link_text):
     url = selectedtext.strip()
-    if QueryLinkText:
+    if query_link_text:
         h = Hyperlink(editor, editor.parentWindow, selectedtext, True)
         if h.exec():
             replacement = h.replacement
@@ -119,7 +112,6 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, QueryLinkTe
     editor.web.eval(
         "document.execCommand('insertHTML', false, %s);"
         % json.dumps(replacement))
-Editor.format_link_string_as_html_hyperlink = format_link_string_as_html_hyperlink
 
 
 def add_to_context(view, menu):
@@ -131,38 +123,38 @@ def add_to_context(view, menu):
         # not a html hyperlink
         if is_valid_url(selectedtext.strip()):
             if gc('contextmenu_show_transform_selected_url_to_hyperlink', False):
-                a = menu.addAction(_("Hyperlink - transform to hyperlink"))
+                a = menu.addAction("Hyperlink - transform to hyperlink")
                 # a.setShortcut(QKeySequence("Ctrl+Alt+ö"))  #doesn't work
                 a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, False))
             if gc('contextmenu_show_set_link_text', False):
-                a = menu.addAction(_("Hyperlink - set link text "))
+                a = menu.addAction("Hyperlink - set link text ")
                 a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, True))
     if (data.linkUrl().toString() or data.linkText()) and gc('contextmenu_show_unlink'):
-        a = menu.addAction(_("Hyperlink - unlink "))
+        a = menu.addAction("Hyperlink - unlink ")
         a.triggered.connect(lambda _, e=view.editor: hlunlink(e))
     if url.isValid() and gc("contextmenu_show_copy_url"):
-        a = menu.addAction(_("Copy URL"))
+        a = menu.addAction("Copy URL")
         a.triggered.connect(lambda _, v="", u=url: set_clip(v, u))
     if url.isValid() and gc("contextmenu_show_open_in_browser"):
-        a = menu.addAction(_("Open URL"))
+        a = menu.addAction("Open URL")
         a.triggered.connect(lambda _, u=url: openLink(u))
-addHook("EditorWebView.contextMenuEvent", add_to_context)
+addHook("EditorWebView.contextMenuEvent", add_to_context)  # noqa
 
 
 # reviewer
 def set_clip(v, u):
-    QApplication.clipboard().setText(u.url())
+    QApplication.clipboard().setText(u.url())  # noqa
 
 
-def _reviewerContextMenu(view, menu):
+def reviewer_context_menu(view, menu):
     if mw.state != "review":
         return
     context_data = view.page().contextMenuData()
     url = context_data.linkUrl()
     if url.isValid():
-        a = menu.addAction(_("Copy URL"))
+        a = menu.addAction("Copy URL")
         a.triggered.connect(lambda _, v=view, u=url: set_clip(v, u))
-if gc("show_in_reviewer_context_menu"):
-    addHook('AnkiWebView.contextMenuEvent', _reviewerContextMenu)
+if gc("show_in_reviewer_context_menu"):  # noqa
+    addHook('AnkiWebView.contextMenuEvent', reviewer_context_menu)
