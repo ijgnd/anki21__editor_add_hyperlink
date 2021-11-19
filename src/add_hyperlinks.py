@@ -118,23 +118,24 @@ Editor.format_link_string_as_html_hyperlink = format_link_string_as_html_hyperli
 
 
 def add_to_context(view, menu):
-    # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
-    data = view.page().contextMenuData()
+    # cf. https://doc.qt.io/qt-6/qwebenginecontextmenurequest.html
+    context_request = view.lastContextMenuRequest()
+    url = context_request.mediaUrl()
     selectedtext = view.editor.web.selectedText()
-    url = data.linkUrl()
-    if not (url.toString() or data.linkText()):
+    if not (url.toString() or context_request.linkText()):
         # not a html hyperlink
         if is_valid_url(selectedtext.strip()):
             if gc('contextmenu_show_transform_selected_url_to_hyperlink', False):
                 a = menu.addAction(_("Hyperlink - transform to hyperlink"))
                 # a.setShortcut(QKeySequence("Ctrl+Alt+ö"))  #doesn't work
-                a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
+                a.triggered.connect(lambda _, e=view.editor, u=context_request, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, False))
             if gc('contextmenu_show_set_link_text', False):
                 a = menu.addAction(_("Hyperlink - set link text "))
-                a.triggered.connect(lambda _, e=view.editor, u=data, s=selectedtext:
+                a.triggered.connect(lambda _, e=view.editor, u=context_request, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, True))
-    if (data.linkUrl().toString() or data.linkText()) and gc('contextmenu_show_unlink'):
+    if ((context_request.linkUrl().toString() or context_request.linkText())
+         and gc('contextmenu_show_unlink')):
         a = menu.addAction(_("Hyperlink - unlink "))
         a.triggered.connect(lambda _, e=view.editor: hlunlink(e))
     if url.isValid() and gc("contextmenu_show_copy_url"):
@@ -154,8 +155,8 @@ def set_clip(v, u):
 def _reviewerContextMenu(view, menu):
     if mw.state != "review":
         return
-    context_data = view.page().contextMenuData()
-    url = context_data.linkUrl()
+    context_request = view.lastContextMenuRequest()
+    url = context_request.mediaUrl()
     if url.isValid():
         a = menu.addAction(_("Copy URL"))
         a.triggered.connect(lambda _, v=view, u=url: set_clip(v, u))
