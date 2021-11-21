@@ -6,7 +6,7 @@ option to show additional menues in the context menu
 the selection
 - `contextmenu_show_set_link_text`: if true and if you have selected a valid url you'll see an 
 additional context menu entry
-- `encode_illegal_characters_in_links`: "Whether characters like \" or ? will transformed in the
+- `encode_illegal_characters_in_links`: "Whether the character `"` will transformed in the
 html source code to percent encoding
 - `remove whitespace from beginning and end of urls`: Whether whitespace characters will be removed 
 from the beginning and end of text you paste into the field 'Link to' in the dialog
