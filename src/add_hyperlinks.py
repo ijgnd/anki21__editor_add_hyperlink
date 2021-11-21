@@ -1,9 +1,11 @@
 # Anki add-on to insert hyperlinks from the editor
 
-# Copyright 2014-2017 Stefan van den Akker <neftas@protonmail.com>
-#           2018- ijgnd
+# Copyright 2018- ijgnd
 #           2020 Arthur Milchior
 
+# based on the add-on for anki 2.0 which had this copyright notice: 
+
+# Copyright 2014-2017 Stefan van den Akker <neftas@protonmail.com>        
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
