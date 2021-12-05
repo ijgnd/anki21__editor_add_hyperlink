@@ -65,7 +65,7 @@ def toggle_hyperlink(editor):
 
 def keystr(k):
     key = QKeySequence(k)
-    return key.toString(QKeySequence.NativeText)
+    return key.toString(QKeySequence.SequenceFormat.NativeText)
 
 
 def setup_editor_buttons(buttons, editor):

@@ -24,7 +24,7 @@ from .helper_functions import (
 
 class Hyperlink(QDialog):
     def __init__(self, editor, parent_window, selected_visible_text, selected_is_url=False):
-        QDialog.__init__(self, parent_window, Qt.Window)
+        QDialog.__init__(self, parent_window, Qt.WindowType.Window)
         self.editor_instance = editor
         self.parent_window = parent_window
         self.visible_text = selected_visible_text
