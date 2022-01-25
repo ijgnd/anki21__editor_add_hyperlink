@@ -26,7 +26,7 @@ import os
 
 from anki.hooks import addHook
 from aqt import mw
-from aqt.qt import QApplication, QKeySequence
+from aqt.qt import QApplication, QKeySequence, qtmajor
 from aqt.utils import openLink
 
 from .config import gc
@@ -117,9 +117,14 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, query_link_
 
 
 def add_to_context(view, menu):
-    # cf. https://doc.qt.io/qt-6/qwebenginecontextmenurequest.html
-    context_request = view.lastContextMenuRequest()
-    url = context_request.mediaUrl()
+    if qtmajor == 5:
+        # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
+        context_request = view.page().contextMenuData()
+        url = context_request.linkUrl()
+    else:
+        # cf. https://doc.qt.io/qt-6/qwebenginecontextmenurequest.html
+        context_request = view.lastContextMenuRequest()
+        url = context_request.mediaUrl()
     selectedtext = view.editor.web.selectedText()
     if not (url.toString() or context_request.linkText()):
         # not a html hyperlink
