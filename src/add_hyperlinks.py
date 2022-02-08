@@ -161,7 +161,7 @@ def reviewer_context_menu(view, menu):
         return
     if qtmajor == 6:
         context_request = view.lastContextMenuRequest()
-        url = context_request.mediaUrl()
+        url = context_request.linkUrl()
     else:
         context_data = view.page().contextMenuData()
         url = context_data.linkUrl()
