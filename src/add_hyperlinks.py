@@ -159,8 +159,12 @@ def set_clip(v, u):
 def reviewer_context_menu(view, menu):
     if mw.state != "review":
         return
-    context_request = view.lastContextMenuRequest()
-    url = context_request.mediaUrl()
+    if qtmajor == 6:
+        context_request = view.lastContextMenuRequest()
+        url = context_request.mediaUrl()
+    else:
+        context_data = view.page().contextMenuData()
+        url = context_data.linkUrl()
     if url.isValid():
         a = menu.addAction("Copy URL")
         a.triggered.connect(lambda _, v=view, u=url: set_clip(v, u))
