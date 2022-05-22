@@ -34,12 +34,14 @@ from .helper_functions import (
     combine_to_hyperlink,
     is_valid_url,
 )
+# from .anki_version_detection import anki_point_version
 from .window import Hyperlink
 
 addon_path = os.path.dirname(__file__)
 
 
 def hlunlink(editor):
+    # editor.web.eval("document.execCommand('unlink')")
     editor.web.eval("setFormat('unlink')")
 
 
@@ -120,11 +122,10 @@ def add_to_context(view, menu):
     if qtmajor == 5:
         # cf. https://doc.qt.io/qt-5/qwebenginepage.html#contextMenuData
         context_request = view.page().contextMenuData()
-        url = context_request.linkUrl()
     else:
         # cf. https://doc.qt.io/qt-6/qwebenginecontextmenurequest.html
         context_request = view.lastContextMenuRequest()
-        url = context_request.mediaUrl()
+    url = context_request.linkUrl()
     selectedtext = view.editor.web.selectedText()
     if not (url.toString() or context_request.linkText()):
         # not a html hyperlink
@@ -138,8 +139,7 @@ def add_to_context(view, menu):
                 a = menu.addAction("Hyperlink - set link text ")
                 a.triggered.connect(lambda _, e=view.editor, u=context_request, s=selectedtext:
                                     format_link_string_as_html_hyperlink(e, u, s, True))
-    if ((context_request.linkUrl().toString() or context_request.linkText())
-         and gc('contextmenu_show_unlink')):
+    if ((url.toString() or context_request.linkText()) and gc('contextmenu_show_unlink')):
         a = menu.addAction("Hyperlink - unlink ")
         a.triggered.connect(lambda _, e=view.editor: hlunlink(e))
     if url.isValid() and gc("contextmenu_show_copy_url"):
