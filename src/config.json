@@ -5,6 +5,7 @@
     "contextmenu_show_open_in_browser": true,
     "contextmenu_show_set_link_text": true,
     "encode_illegal_characters_in_links": true,
+    "prepend incomplete url default": "http",
     "remove whitespace from beginning and end of urls": true,
     "shortcut_insert_link": "Ctrl+Shift+H",
     "shortcut_unlink": "Ctrl+Shift+Alt+H",

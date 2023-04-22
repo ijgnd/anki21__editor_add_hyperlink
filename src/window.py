@@ -2,12 +2,9 @@ import json
 
 from aqt.qt import (
     QDialog,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
+    QDialogButtonBox,
     Qt,
-    QVBoxLayout,
+    qtmajor,
 )
 from aqt.utils import (
     saveGeom,
@@ -17,9 +14,13 @@ from aqt.utils import (
 from .config import gc
 from .helper_functions import (
     combine_to_hyperlink,
-    escape_html_chars,
-    some_percent_encoding,
 )
+
+if qtmajor == 5:
+    from .forms5 import dialog  # type: ignore  # noqa
+else:
+    from .forms6 import dialog  # type: ignore  # noqa
+
 
 
 class Hyperlink(QDialog):
@@ -29,51 +30,38 @@ class Hyperlink(QDialog):
         self.parent_window = parent_window
         self.visible_text = selected_visible_text
         self.selected_is_url = selected_is_url
-        self.setWindowTitle("Anki: Create a hyperlink")
-        self.resize(500, 200)
+        
+        self.dialog = dialog.Ui_Dialog()
+        self.dialog.setupUi(self)
         restoreGeom(self, "318752047__add_hyperlink")
 
-        self.pb_ok = QPushButton("&OK", self)
-        self.pb_ok.setEnabled(False)
-        self.pb_ok.clicked.connect(self.store_hyperlink_and_close)
+        self.dialog.buttonBox.accepted.connect(self.store_hyperlink_and_close)
+        self.dialog.buttonBox.rejected.connect(self.reject)
 
-        self.pb_cancel = QPushButton("&Cancel", self)
-        self.pb_cancel.clicked.connect(self.reject)
+        self.dialog.url_edit.textChanged.connect(self.maybe_enable_ok_button)
+        self.dialog.text_edit.textChanged.connect(self.maybe_enable_ok_button)
 
-        self.url_label = QLabel("Link to:")
-        self.url_edit = QLineEdit()
-        self.url_edit.setPlaceholderText("URL")
-        self.url_edit.textChanged.connect(self.maybe_enable_ok_button)
+        self.pb_ok = self.dialog.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        self.pb_cancel = self.dialog.buttonBox.button(QDialogButtonBox.StandardButton.Cancel)
 
-        self.text_label = QLabel("Text to display:")
-        self.text_edit = QLineEdit()
-        self.text_edit.setPlaceholderText("Text")
-        self.text_edit.textChanged.connect(self.maybe_enable_ok_button)
+        if gc("prepend incomplete url default") == "http":
+            self.dialog.rb_http.setChecked(True)
+        elif gc("prepend incomplete url default") == "https":
+            self.dialog.rb_https.setChecked(True)
+        else:
+            self.dialog.rb_nothing.setChecked(True)
 
-        self.button_bar = QHBoxLayout()
-        self.button_bar.addStretch(1)
-        self.button_bar.addWidget(self.pb_cancel)
-        self.button_bar.addWidget(self.pb_ok)
-
-        self.dialog_vbox = QVBoxLayout()
-        self.dialog_vbox.addWidget(self.url_label)
-        self.dialog_vbox.addWidget(self.url_edit)
-        self.dialog_vbox.addWidget(self.text_label)
-        self.dialog_vbox.addWidget(self.text_edit)
-        self.dialog_vbox.addLayout(self.button_bar)
-        self.setLayout(self.dialog_vbox)
-
-        # if user already selected text, put it in self.text_edit
+        # if user already selected text, put it in self.dialog.text_edit
         if self.visible_text:
             if self.selected_is_url:
-                self.url_edit.setText(self.visible_text)
-                self.text_edit.setFocus()
+                self.dialog.url_edit.setText(self.visible_text)
+                self.dialog.text_edit.setFocus()
             else:
-                self.text_edit.setText(self.visible_text)
-                self.url_edit.setFocus()
+                self.dialog.text_edit.setText(self.visible_text)
+                self.dialog.url_edit.setFocus()
 
     def maybe_enable_ok_button(self):
-        if self.url_edit.text() and self.text_edit.text():
+        if self.dialog.url_edit.text() and self.dialog.text_edit.text():
             self.pb_ok.setEnabled(True)
         else:
             self.pb_ok.setEnabled(False)
@@ -83,8 +71,13 @@ class Hyperlink(QDialog):
         QDialog.reject(self)
 
     def store_hyperlink_and_close(self):
-        self.url = self.url_edit.text()
-        self.text = self.text_edit.text()
-        self.replacement = combine_to_hyperlink(self.url, self.text)        
+        self.url = self.dialog.url_edit.text()
+        self.text = self.dialog.text_edit.text()
+        if not self.url.startswith(("http", "https")):
+            if self.dialog.rb_https.isChecked():
+                self.url = f"https://{self.url}"
+            if self.dialog.rb_http.isChecked():
+                self.url = f"http://{self.url}"
+        self.replacement = combine_to_hyperlink(self.url, self.text)
         saveGeom(self, "318752047__add_hyperlink")
         self.accept()
