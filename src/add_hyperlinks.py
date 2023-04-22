@@ -34,7 +34,7 @@ from .helper_functions import (
     combine_to_hyperlink,
     is_valid_url,
 )
-# from .anki_version_detection import anki_point_version
+from .anki_version_detection import anki_point_version
 from .window import Hyperlink
 
 addon_path = os.path.dirname(__file__)
@@ -58,8 +58,10 @@ def toggle_hyperlink(editor):
         # that a user changed. But then I can no longer use document.execCommand('CreateLink'
         # So I only document.execCommand('CreateLink when the user didn't change the link text
         # in the dialog.
-        if selected == h.text:
+        if selected == h.text and anki_point_version <= 49:
             js = """ document.execCommand("CreateLink", false, %s); """ % json.dumps(h.url)
+        elif selected == h.text and anki_point_version >= 50:
+            js = """ setFormat("CreateLink", %s); """ % json.dumps(h.url)
         else:
             js = """ document.execCommand("insertHTML", false, %s); """ % json.dumps(h.replacement)
         editor.web.eval(js)
