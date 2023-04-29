@@ -8,6 +8,7 @@ the selection
 additional context menu entry
 - `encode_illegal_characters_in_links`: "Whether the character `"` will transformed in the
 html source code to percent encoding
+- `prepend incomplete url default`: possible options are `"http"`, `"https"` or (if you don't want to have a prefix added) use `""`/`false`.
 - `remove whitespace from beginning and end of urls`: Whether whitespace characters will be removed 
 from the beginning and end of text you paste into the field 'Link to' in the dialog
 - `shortcut_insert_link` "Ctrl+Shift+H",
