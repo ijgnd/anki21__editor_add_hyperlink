@@ -75,7 +75,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>prepend missing scheme (e.g. www.expample.com) with?</string>
+            <string>prepend missing scheme (e.g. www.example.com) with?</string>
            </property>
           </widget>
          </item>
