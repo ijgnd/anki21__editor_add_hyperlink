@@ -40,6 +40,18 @@ from .window import Hyperlink
 addon_path = os.path.dirname(__file__)
 
 
+def insert_html_into_editor_at_cursor(editor, html, action="insertHTML"):
+    if anki_point_version <= 49:
+        js = "document.execCommand('%s', false, %s);" % (action, json.dumps(html))  
+    else:
+        js = """
+setTimeout(function() {
+document.execCommand('%s', false, %s);
+}, 40); """ % (action, json.dumps(html))
+    editor.web.eval(js)
+    
+
+
 def hlunlink(editor):
     # editor.web.eval("document.execCommand('unlink')")
     editor.web.eval("setFormat('unlink')")
@@ -57,14 +69,11 @@ def toggle_hyperlink(editor):
         # A proper solution would mean that I'd also have to handle text
         # that a user changed. But then I can no longer use document.execCommand('CreateLink'
         # So I only document.execCommand('CreateLink when the user didn't change the link text
-        # in the dialog.
-        if selected == h.text and anki_point_version <= 49:
-            js = """ document.execCommand("CreateLink", false, %s); """ % json.dumps(h.url)
-        elif selected == h.text and anki_point_version >= 50:
-            js = """ setFormat("CreateLink", %s); """ % json.dumps(h.url)
+        # in the dialog.)
+        if selected == h.text:
+            insert_html_into_editor_at_cursor(editor, h.url, "CreateLink")
         else:
-            js = """ document.execCommand("insertHTML", false, %s); """ % json.dumps(h.replacement)
-        editor.web.eval(js)
+            insert_html_into_editor_at_cursor(editor, h.replacement)
 
 
 def keystr(k):
@@ -115,9 +124,7 @@ def format_link_string_as_html_hyperlink(editor, data, selectedtext, query_link_
             replacement = replacement + i
         if selectedtext.startswith(i):
             replacement = i + replacement
-    editor.web.eval(
-        "document.execCommand('insertHTML', false, %s);"
-        % json.dumps(replacement))
+    insert_html_into_editor_at_cursor(editor, replacement)
 
 
 def add_to_context(view, menu):
