@@ -28,7 +28,7 @@ class Hyperlink(QDialog):
         QDialog.__init__(self, parent_window, Qt.WindowType.Window)
         self.editor_instance = editor
         self.parent_window = parent_window
-        self.visible_text = selected_visible_text
+        self.selected_visible_text = selected_visible_text
         self.selected_is_url = selected_is_url
         
         self.dialog = dialog.Ui_Dialog()
@@ -52,12 +52,12 @@ class Hyperlink(QDialog):
             self.dialog.rb_nothing.setChecked(True)
 
         # if user already selected text, put it in self.dialog.text_edit
-        if self.visible_text:
+        if self.selected_visible_text:
             if self.selected_is_url:
-                self.dialog.url_edit.setText(self.visible_text)
+                self.dialog.url_edit.setText(self.selected_visible_text)
                 self.dialog.text_edit.setFocus()
             else:
-                self.dialog.text_edit.setText(self.visible_text)
+                self.dialog.text_edit.setText(self.selected_visible_text)
                 self.dialog.url_edit.setFocus()
 
     def maybe_enable_ok_button(self):
