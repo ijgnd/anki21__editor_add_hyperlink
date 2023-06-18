@@ -5,6 +5,7 @@
     "contextmenu_show_transform_selected_url_to_hyperlink": true,
     "contextmenu_show_unlink": true,
     "encode_illegal_characters_in_links": true,
+    "guess and auto fill fields in dialog from clipboard": true,
     "prepend incomplete url default": "http",
     "remove whitespace from beginning and end of urls": true,
     "shortcut_insert_link": "Ctrl+Shift+H",

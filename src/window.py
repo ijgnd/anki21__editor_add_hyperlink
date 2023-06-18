@@ -1,6 +1,7 @@
 import json
 
 from aqt.qt import (
+    QApplication,
     QDialog,
     QDialogButtonBox,
     Qt,
@@ -59,6 +60,13 @@ class Hyperlink(QDialog):
             else:
                 self.dialog.text_edit.setText(self.selected_visible_text)
                 self.dialog.url_edit.setFocus()
+        else:
+            if gc("guess and auto fill fields in dialog from clipboard"):
+                clip_text = QApplication.clipboard().text()
+                if clip_text.startswith(("http", "www.")):
+                    self.dialog.url_edit.setText(clip_text)
+                    self.dialog.text_edit.setFocus()
+
 
     def maybe_enable_ok_button(self):
         if self.dialog.url_edit.text() and self.dialog.text_edit.text():
