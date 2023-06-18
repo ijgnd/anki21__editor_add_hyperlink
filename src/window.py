@@ -54,7 +54,7 @@ class Hyperlink(QDialog):
 
         # if user already selected text, put it in self.dialog.text_edit
         if self.selected_visible_text:
-            if self.selected_is_url:
+            if self.selected_is_url or self.selected_visible_text.startswith(("http", "www.")):
                 self.dialog.url_edit.setText(self.selected_visible_text)
                 self.dialog.text_edit.setFocus()
             else:
